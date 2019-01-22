@@ -25,8 +25,8 @@ type CompareBranchesModel struct {
 
 // APIService is a service that provides operations allowing you to interact with github api
 type APIService struct {
-	*http.Client
 	baseURL string
+	*http.Client
 }
 
 // GetBranches return all the branches matching the supplied prefix
