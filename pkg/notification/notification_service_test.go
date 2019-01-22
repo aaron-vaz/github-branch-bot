@@ -51,3 +51,36 @@ func TestSlackService_Notify(t *testing.T) {
 		})
 	}
 }
+
+func TestSlackService_GenerateMessage(t *testing.T) {
+	type args struct {
+		repo    string
+		base    string
+		head    string
+		aheadBy int
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "Test Happy Path",
+			args: args{
+				repo:    "test",
+				base:    "develop",
+				head:    "master",
+				aheadBy: 5,
+			},
+			want: "*test*:\nmaster is ahead of develop by 5 commits\n",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			service := &SlackService{}
+			if got := service.GenerateMessage(tt.args.repo, tt.args.base, tt.args.head, tt.args.aheadBy); got != tt.want {
+				t.Errorf("SlackService.GenerateMessage() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

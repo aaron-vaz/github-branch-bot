@@ -26,7 +26,7 @@ func TestAPIService_GetBranches(t *testing.T) {
 	}))
 
 	type args struct {
-		prefix string
+		prefix []string
 	}
 
 	tests := []struct {
@@ -37,38 +37,45 @@ func TestAPIService_GetBranches(t *testing.T) {
 		want    []string
 	}{
 		{
-			name:    "Test Happy Path with prefix",
+			name:    "Test Happy Path with 1 prefix",
 			server:  jsonServer,
 			service: &APIService{jsonServer.URL, jsonServer.Client()},
-			args:    args{prefix: "master"},
+			args:    args{prefix: []string{"master"}},
 			want:    []string{"master"},
+		},
+		{
+			name:    "Test Happy Path with 2 prefix",
+			server:  jsonServer,
+			service: &APIService{jsonServer.URL, jsonServer.Client()},
+			args:    args{prefix: []string{"master", "develop"}},
+			want:    []string{"develop", "master"},
 		},
 		{
 			name:    "Test Happy Path without prefix",
 			server:  jsonServer,
 			service: &APIService{jsonServer.URL, jsonServer.Client()},
-			args:    args{prefix: ""},
-			want:    []string{"develop", "master"},
+			args:    args{prefix: []string{""}},
+			want:    []string{"develop", "master", "release"},
 		},
 		{
 			name:    "Test Prefix doesn't match",
 			server:  jsonServer,
 			service: &APIService{jsonServer.URL, jsonServer.Client()},
-			args:    args{prefix: "test"},
+			args:    args{prefix: []string{"test"}},
 			want:    []string{},
 		},
 		{
 			name:    "Test no response path",
 			server:  noResponseServer,
 			service: &APIService{noResponseServer.URL, noResponseServer.Client()},
-			args:    args{prefix: "master"},
+			args:    args{prefix: []string{"master"}},
 			want:    []string{},
 		},
 		{
 			name:    "Test invalid JSON path",
 			server:  invalidJSONServer,
 			service: &APIService{invalidJSONServer.URL, invalidJSONServer.Client()},
-			args:    args{prefix: "master"},
+			args:    args{prefix: []string{"master"}},
 			want:    []string{},
 		},
 	}

@@ -25,22 +25,24 @@ type CompareBranchesModel struct {
 
 // APIService is a service that provides operations allowing you to interact with github api
 type APIService struct {
-	baseURL string
+	BaseURL string
 	*http.Client
 }
 
 // GetBranches return all the branches matching the supplied prefix
 // if no prefix is supplied it returns all the branches from the repo
-func (service *APIService) GetBranches(owner string, repo string, prefix string) []string {
-	url := service.baseURL + fmt.Sprintf(getBranchesPath, owner, repo)
+func (service *APIService) GetBranches(owner string, repo string, prefix []string) []string {
+	url := service.BaseURL + fmt.Sprintf(getBranchesPath, owner, repo)
 	responseModel := []BranchModel{}
 
 	service.getGithubResponse(url, &responseModel)
 
 	var branches []string
 	for _, value := range responseModel {
-		if prefix == "" || strings.HasPrefix(value.Name, prefix) {
-			branches = append(branches, value.Name)
+		for _, branch := range prefix {
+			if branch == "" || strings.HasPrefix(value.Name, branch) {
+				branches = append(branches, value.Name)
+			}
 		}
 	}
 
@@ -49,7 +51,7 @@ func (service *APIService) GetBranches(owner string, repo string, prefix string)
 
 // GetAheadBy returns how many commits the supplied branch is ahead of the supplied base branch
 func (service *APIService) GetAheadBy(owner string, repo string, base string, head string) int {
-	url := service.baseURL + fmt.Sprintf(compareBranchesPath, owner, repo, base, head)
+	url := service.BaseURL + fmt.Sprintf(compareBranchesPath, owner, repo, base, head)
 	responseModel := &CompareBranchesModel{}
 
 	service.getGithubResponse(url, responseModel)

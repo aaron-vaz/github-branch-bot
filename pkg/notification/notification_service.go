@@ -3,6 +3,7 @@ package notification
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -14,6 +15,13 @@ import (
 type SlackService struct {
 	URL string
 	*http.Client
+}
+
+// GenerateMessage build a mesage that will be posted to the slack channel
+func (service *SlackService) GenerateMessage(repo, base, head string, aheadBy int) string {
+	message := "*%s*:\n"
+	message += "%s is ahead of %s by %d commits\n"
+	return fmt.Sprintf(message, repo, head, base, aheadBy)
 }
 
 // Notify sends slack message in the form of a json payload to the URL provided
