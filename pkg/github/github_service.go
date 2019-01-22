@@ -23,7 +23,7 @@ type CompareBranchesModel struct {
 	Ahead int `json:"ahead_by"`
 }
 
-// APIService is a service that provides operation allowing you to interact with github api
+// APIService is a service that provides operations allowing you to interact with github api
 type APIService struct {
 	*http.Client
 	baseURL string
