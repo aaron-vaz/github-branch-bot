@@ -66,7 +66,7 @@ func (service *APIService) getGithubResponse(url string, model interface{}) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	util.ErrCheck(err, false)
 
-	req.Header.Add("Authorization", service.Token)
+	req.Header.Add("Authorization", "token "+service.Token)
 
 	res, err := service.Do(req)
 	util.ErrCheck(err, false)

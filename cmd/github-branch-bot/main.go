@@ -43,7 +43,7 @@ func (b *Bot) Start() {
 // HandleRequest is the main entry point to the application, it will be executed by the AWS
 func HandleRequest() {
 	params := config.ParseParams()
-	githubAPI := &github.APIService{BaseURL: params.GithubBaseURL, Client: http.DefaultClient}
+	githubAPI := &github.APIService{BaseURL: params.GithubBaseURL, Token: params.GithubToken, Client: http.DefaultClient}
 	slackAPI := &notification.SlackService{URL: params.WebhookURL, Client: http.DefaultClient}
 
 	bot := &Bot{params, githubAPI, slackAPI}

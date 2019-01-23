@@ -29,7 +29,7 @@ func TestAPIService_GetBranches(t *testing.T) {
 	jsonServer := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		token := req.Header.Get("Authorization")
 
-		if token == "" {
+		if token != "token "+githubToken {
 			t.Error("No github token was supplied")
 		}
 
