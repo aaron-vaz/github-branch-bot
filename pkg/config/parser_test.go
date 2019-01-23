@@ -16,6 +16,7 @@ func TestParseParams(t *testing.T) {
 			name: "Test Happy path",
 			envSupplier: func() {
 				os.Setenv("GITHUB_BASE_URL", "http://localhost.com")
+				os.Setenv("GITHUB_TOKEN", "token")
 				os.Setenv("GITHUB_ORGANISATION", "org")
 				os.Setenv("GITHUB_REPO", "repo")
 				os.Setenv("BASE_BRANCH", "develop")
@@ -24,6 +25,7 @@ func TestParseParams(t *testing.T) {
 			},
 			want: &Params{
 				GithubBaseURL:      "http://localhost.com",
+				GithubToken:        "token",
 				GithubOrganization: "org",
 				GithubRepo:         []string{"repo"},
 				BaseBranch:         "develop",
@@ -36,6 +38,7 @@ func TestParseParams(t *testing.T) {
 			name: "Test Multiple params path",
 			envSupplier: func() {
 				os.Setenv("GITHUB_BASE_URL", "http://localhost.com")
+				os.Setenv("GITHUB_TOKEN", "token")
 				os.Setenv("GITHUB_ORGANISATION", "org")
 				os.Setenv("GITHUB_REPO", "repo,repo2")
 				os.Setenv("BASE_BRANCH", "develop")
@@ -44,6 +47,7 @@ func TestParseParams(t *testing.T) {
 			},
 			want: &Params{
 				GithubBaseURL:      "http://localhost.com",
+				GithubToken:        "token",
 				GithubOrganization: "org",
 				GithubRepo:         []string{"repo", "repo2"},
 				BaseBranch:         "develop",
@@ -56,6 +60,7 @@ func TestParseParams(t *testing.T) {
 			name: "Test wrong delimeter path",
 			envSupplier: func() {
 				os.Setenv("GITHUB_BASE_URL", "http://localhost.com")
+				os.Setenv("GITHUB_TOKEN", "token")
 				os.Setenv("GITHUB_ORGANISATION", "org")
 				os.Setenv("GITHUB_REPO", "repo:repo2")
 				os.Setenv("BASE_BRANCH", "develop")
@@ -64,6 +69,7 @@ func TestParseParams(t *testing.T) {
 			},
 			want: &Params{
 				GithubBaseURL:      "http://localhost.com",
+				GithubToken:        "token",
 				GithubOrganization: "org",
 				GithubRepo:         []string{"repo:repo2"},
 				BaseBranch:         "develop",
@@ -79,6 +85,7 @@ func TestParseParams(t *testing.T) {
 			},
 			want: &Params{
 				GithubBaseURL:      "http://localhost.com",
+				GithubToken:        "",
 				GithubOrganization: "",
 				GithubRepo:         []string{""},
 				BaseBranch:         "develop",
@@ -103,6 +110,7 @@ func TestParseParams(t *testing.T) {
 
 func clearEnvs() {
 	os.Setenv("GITHUB_BASE_URL", "")
+	os.Setenv("GITHUB_TOKEN", "")
 	os.Setenv("GITHUB_ORGANISATION", "")
 	os.Setenv("GITHUB_REPO", "")
 	os.Setenv("BASE_BRANCH", "")

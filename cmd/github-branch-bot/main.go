@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/aaron-vaz/github-branch-bot/pkg/config"
@@ -21,10 +22,17 @@ func (b *Bot) Start() {
 	for _, repo := range b.GithubRepo {
 		branches := b.GetBranches(b.GithubOrganization, repo, b.HeadBranchPrefixes)
 
+		if len(branches) == 0 {
+			log.Printf("No branches matched prefixes %s, check configuration", b.HeadBranchPrefixes)
+			continue
+		}
+
 		for _, branch := range branches {
+			log.Printf("Checking %s branch %s", repo, branch)
 			ahead := b.GetAheadBy(b.GithubOrganization, repo, b.BaseBranch, branch)
 
 			if ahead != 0 {
+				log.Printf("%s branch %s is ahead of %s", repo, branch, b.BaseBranch)
 				message := b.GenerateMessage(repo, b.BaseBranch, branch, ahead)
 				b.Notify(message)
 			}
@@ -32,18 +40,11 @@ func (b *Bot) Start() {
 	}
 }
 
+// HandleRequest is the main entry point to the application, it will be executed by the AWS
 func HandleRequest() {
 	params := config.ParseParams()
-
-	githubAPI := &github.APIService{
-		BaseURL: params.GithubBaseURL,
-		Client:  http.DefaultClient,
-	}
-
-	slackAPI := &notification.SlackService{
-		URL:    params.WebhookURL,
-		Client: http.DefaultClient,
-	}
+	githubAPI := &github.APIService{BaseURL: params.GithubBaseURL, Client: http.DefaultClient}
+	slackAPI := &notification.SlackService{URL: params.WebhookURL, Client: http.DefaultClient}
 
 	bot := &Bot{params, githubAPI, slackAPI}
 	bot.Start()

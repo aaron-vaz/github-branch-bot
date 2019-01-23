@@ -10,8 +10,10 @@ import (
 	"github.com/aaron-vaz/golang-utils/pkg/util"
 )
 
-const getBranchesPath = "/repos/%s/%s/branches"
-const compareBranchesPath = "/repos/%s/%s/compare/%s...%s"
+const (
+	getBranchesPath     = "/repos/%s/%s/branches"
+	compareBranchesPath = "/repos/%s/%s/compare/%s...%s"
+)
 
 // BranchModel is the struct that represents the github branches response
 type BranchModel struct {
@@ -26,6 +28,7 @@ type CompareBranchesModel struct {
 // APIService is a service that provides operations allowing you to interact with github api
 type APIService struct {
 	BaseURL string
+	Token   string
 	*http.Client
 }
 
@@ -60,7 +63,12 @@ func (service *APIService) GetAheadBy(owner string, repo string, base string, he
 }
 
 func (service *APIService) getGithubResponse(url string, model interface{}) {
-	res, err := service.Get(url)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	util.ErrCheck(err, false)
+
+	req.Header.Add("Authorization", service.Token)
+
+	res, err := service.Do(req)
 	util.ErrCheck(err, false)
 
 	if res != nil {
