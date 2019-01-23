@@ -1,0 +1,25 @@
+service: github-branch-bot
+
+provider:
+  name: aws
+  runtime: go1.x
+
+functions:
+  github-branch-bot:
+    handler: bin/github-branch-bot
+    environment:
+      GITHUB_BASE_URL: 
+      GITHUB_TOKEN: 
+      GITHUB_ORGANISATION:
+      GITHUB_REPO: 
+      BASE_BRANCH:
+      HEAD_BRANCH_PREFIX:
+      WEBHOOK_URL:
+    events:
+      - schedule: rate(1 day)
+
+package:
+ exclude:
+   - ./**
+ include:
+    - ./bin/github-branch-bot.zip

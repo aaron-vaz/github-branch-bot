@@ -29,6 +29,10 @@ package: build
 docker: setup
 	@echo "===> Building in docker container"
 	@docker build --build-arg REPO=${REPO} -t ${NAME} .
-	@docker run --rm --volume ${BUILD_DIR}:${REPO}/bin -t ${NAME}	
+	@docker run --rm --volume ${BUILD_DIR}:${REPO}/bin -t ${NAME}
+
+deploy: docker
+	@echo "===> Deploying to AWS"
+	@sls deploy	
 
 .PHONY: clean setup deps build test package docker

@@ -25,7 +25,7 @@ func ParseParams() *Params {
 		GithubRepo:         splitEnv("GITHUB_REPO", "", ","),
 		BaseBranch:         getEnv("BASE_BRANCH", "develop"),
 		HeadBranchPrefixes: splitEnv("HEAD_BRANCH_PREFIX", "master", ","),
-		WebhookURL:         getEnv("GITHUB_BASE_URL", "http://localhost.com"),
+		WebhookURL:         getEnv("WEBHOOK_URL", "http://localhost.com"),
 	}
 }
 
