@@ -3,23 +3,30 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:9f856def0f2a7ad33556a06dd9a3fe9f13311dbfb95d41371be7921967ff9bc2"
   name = "github.com/aaron-vaz/golang-utils"
   packages = ["pkg/util"]
+  pruneopts = ""
   revision = "a6acc468de1b57c22f5fd50b40093f0dcc87a0ea"
 
 [[projects]]
+  digest = "1:1c29e45ea5c6fa7e9159bfed0f5b31f10030f536ebc7f87615b93ff5f20c6dfe"
   name = "github.com/aws/aws-lambda-go"
   packages = [
     "lambda",
     "lambda/messages",
-    "lambdacontext"
+    "lambdacontext",
   ]
+  pruneopts = ""
   revision = "928161204cad89472f9e6b5dd49ce16bc91230de"
   version = "v1.8.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "da0ff0030fefdb77bbe4cf2d7444228cec22aa7c44a0f0d8cb24c76b5d77a1b8"
+  input-imports = [
+    "github.com/aaron-vaz/golang-utils/pkg/util",
+    "github.com/aws/aws-lambda-go/lambda",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
