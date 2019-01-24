@@ -25,7 +25,7 @@ func TestBot_Start(t *testing.T) {
 			name:             "Happy Path Test",
 			branchesResponse: readTestResource("branches-happy-path.json"),
 			compareResponse:  readTestResource("ahead-happy-path.json"),
-			messageWant:      `{"text":"*repo*:\nmaster is ahead of develop by 1 commits\n"}`,
+			messageWant:      `{"text":"*org branch check summary:*\n\n*repo*:\nmaster is ahead of develop by 1 commits\n\n"}`,
 		},
 		{
 			name:             "Test Branches inline path",

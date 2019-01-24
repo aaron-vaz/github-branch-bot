@@ -10,19 +10,22 @@ import (
 
 func TestSlackService_Notify(t *testing.T) {
 	tests := []struct {
-		name     string
-		message  string
-		expected string
+		name      string
+		message   string
+		delivered bool
+		expected  string
 	}{
 		{
-			name:     "Test Happy path",
-			message:  "Test Message",
-			expected: `{"text":"Test Message"}`,
+			name:      "Test Happy path",
+			message:   "Test Message",
+			delivered: true,
+			expected:  `{"text":"Test Message"}`,
 		},
 		{
-			name:     "Test empty message path",
-			message:  "",
-			expected: `{"text":""}`,
+			name:      "Test empty message path",
+			message:   "",
+			delivered: false,
+			expected:  "",
 		},
 	}
 	for _, tt := range tests {
@@ -45,8 +48,8 @@ func TestSlackService_Notify(t *testing.T) {
 			service := &SlackService{server.URL, server.Client()}
 			service.Notify(tt.message)
 
-			if received == false {
-				t.Error("No message received")
+			if received != tt.delivered {
+				t.Errorf("Request delivery didnt match expected, want = %t, got = %t", tt.delivered, received)
 			}
 		})
 	}
@@ -80,6 +83,54 @@ func TestSlackService_GenerateMessage(t *testing.T) {
 			service := &SlackService{}
 			if got := service.GenerateMessage(tt.args.repo, tt.args.base, tt.args.head, tt.args.aheadBy); got != tt.want {
 				t.Errorf("SlackService.GenerateMessage() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSlackMessage_String(t *testing.T) {
+	tests := []struct {
+		name string
+		sm   *SlackMessage
+		want string
+	}{
+		{
+			name: "Test happy path",
+			sm: &SlackMessage{
+				Org:      "Organisation",
+				Messages: []string{"message 1", "message 2"},
+			},
+			want: "*Organisation branch check summary:*\n\nmessage 1\nmessage 2\n",
+		},
+		{
+			name: "Test 1 message path",
+			sm: &SlackMessage{
+				Org:      "Organisation",
+				Messages: []string{"message 1"},
+			},
+			want: "*Organisation branch check summary:*\n\nmessage 1\n",
+		},
+		{
+			name: "Test no org path",
+			sm: &SlackMessage{
+				Org:      "",
+				Messages: []string{"message 1"},
+			},
+			want: "",
+		},
+		{
+			name: "Test no messages path",
+			sm: &SlackMessage{
+				Org:      "Organisation",
+				Messages: []string{},
+			},
+			want: "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.sm.String(); got != tt.want {
+				t.Errorf("SlackMessage.String() = %v, want %v", got, tt.want)
 			}
 		})
 	}

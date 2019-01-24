@@ -17,6 +17,28 @@ type SlackService struct {
 	*http.Client
 }
 
+// SlackMessage is used to build the message we will be posting to slack
+type SlackMessage struct {
+	Org      string
+	Messages []string
+}
+
+func (sm *SlackMessage) String() string {
+	if sm.Org == "" || len(sm.Messages) == 0 {
+		return ""
+	}
+
+	ret := fmt.Sprintf("*%s branch check summary:*\n", sm.Org)
+	ret += "\n"
+
+	for _, message := range sm.Messages {
+		ret += message
+		ret += "\n"
+	}
+
+	return ret
+}
+
 // GenerateMessage build a mesage that will be posted to the slack channel
 func (service *SlackService) GenerateMessage(repo, base, head string, aheadBy int) string {
 	message := "*%s*:\n"
@@ -26,6 +48,11 @@ func (service *SlackService) GenerateMessage(repo, base, head string, aheadBy in
 
 // Notify sends slack message in the form of a json payload to the URL provided
 func (service *SlackService) Notify(message string) {
+	if message == "" {
+		log.Println("No message received, notification will not be performed")
+		return
+	}
+
 	payload, err := json.Marshal(map[string]string{"text": message})
 	util.ErrCheck(err, false)
 

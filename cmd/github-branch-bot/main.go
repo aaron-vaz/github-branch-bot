@@ -19,6 +19,11 @@ type Bot struct {
 
 // Start is used to start the application
 func (b *Bot) Start() {
+	sm := &notification.SlackMessage{
+		Org:      b.GithubOrganization,
+		Messages: []string{},
+	}
+
 	for _, repo := range b.GithubRepo {
 		branches := b.GetBranches(b.GithubOrganization, repo, b.HeadBranchPrefixes)
 
@@ -33,11 +38,12 @@ func (b *Bot) Start() {
 
 			if ahead != 0 {
 				log.Printf("%s branch %s is ahead of %s", repo, branch, b.BaseBranch)
-				message := b.GenerateMessage(repo, b.BaseBranch, branch, ahead)
-				b.Notify(message)
+				sm.Messages = append(sm.Messages, b.GenerateMessage(repo, b.BaseBranch, branch, ahead))
 			}
 		}
 	}
+
+	b.Notify(sm.String())
 }
 
 // HandleRequest is the main entry point to the application, it will be executed by the AWS
