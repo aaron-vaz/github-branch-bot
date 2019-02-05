@@ -10,15 +10,11 @@ clean:
 setup:
 	@mkdir -p ${BUILD_DIR}
 
-deps:
-	@echo "===> Running deps"
-	@dep ensure -v
-
 test: 
 	@echo "===> Running go test"
-	@go test -cover $$(go list ./... | grep -v /vendor/)
+	@go test -cover ./...
 
-build: deps setup test
+build: setup test
 	@echo "===> Running go build"
 	@go build -v ${LDFLAGS} -o ${BUILD_DIR}/${NAME} ./cmd/${NAME}
 
@@ -35,4 +31,4 @@ deploy: docker
 	@echo "===> Deploying to AWS"
 	@sls deploy	
 
-.PHONY: clean setup deps build test package docker
+.PHONY: clean setup build test package docker

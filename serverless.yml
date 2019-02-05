@@ -17,7 +17,7 @@ functions:
       HEAD_BRANCH_PREFIX: ""
       WEBHOOK_URL: ""
     events:
-      - schedule: rate(1 day)
+      - schedule: cron(0 0 ? * * *)
 
 package:
  exclude:
