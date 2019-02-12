@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"reflect"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 const (
@@ -113,30 +115,30 @@ func TestAPIService_GetAheadBy(t *testing.T) {
 		name    string
 		server  *httptest.Server
 		service *APIService
-		want    int
+		want    map[string]int
 	}{
 		{
 			name:    "Test Happy Path",
 			server:  jsonServer,
 			service: &APIService{jsonServer.URL, githubToken, jsonServer.Client()},
-			want:    1,
+			want:    map[string]int{"master": 1},
 		},
 		{
 			name:    "Test invalid JSOn path",
 			server:  invalidJSONServer,
 			service: &APIService{invalidJSONServer.URL, githubToken, invalidJSONServer.Client()},
-			want:    0,
+			want:    map[string]int{"master": 0},
 		},
 		{
 			name:    "Test no response path",
 			server:  noResponseServer,
 			service: &APIService{noResponseServer.URL, githubToken, noResponseServer.Client()},
-			want:    0,
+			want:    map[string]int{"master": 0},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.service.GetAheadBy("test", "test", "develop", "master"); got != tt.want {
+			if got := tt.service.GetAheadBy("test", "test", "develop", []string{"master"}); !cmp.Equal(got, tt.want) {
 				t.Errorf("APIService.GetAheadBy() = %v, want %v", got, tt.want)
 			}
 		})

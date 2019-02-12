@@ -21,26 +21,30 @@ type Bot struct {
 func (b *Bot) Start() {
 	sm := &notification.SlackMessage{
 		Org:      b.GithubOrganization,
-		Messages: []string{},
+		Messages: make(map[string][]string),
 	}
 
 	for _, repo := range b.GithubRepo {
 		branches := b.GetBranches(b.GithubOrganization, repo, b.HeadBranchPrefixes)
 
 		if len(branches) == 0 {
-			log.Printf("No branches matched prefixes %s, check configuration", b.HeadBranchPrefixes)
+			log.Printf("No branches of %s matched prefixes %s, check configuration", repo, b.HeadBranchPrefixes)
 			continue
 		}
 
-		for _, branch := range branches {
-			log.Printf("Checking %s branch %s", repo, branch)
-			ahead := b.GetAheadBy(b.GithubOrganization, repo, b.BaseBranch, branch)
+		aheadBranches := b.GetAheadBy(b.GithubOrganization, repo, b.BaseBranch, branches)
 
-			if ahead != 0 {
-				log.Printf("%s branch %s is ahead of %s", repo, branch, b.BaseBranch)
-				sm.Messages = append(sm.Messages, b.GenerateMessage(repo, b.BaseBranch, branch, ahead))
+		var branchMessages []string
+		for branch, aheadBy := range aheadBranches {
+			if message := b.GenerateMessage(repo, b.BaseBranch, branch, aheadBy); message != "" {
+				branchMessages = append(branchMessages, message)
 			}
 		}
+
+		if len(branchMessages) > 0 {
+			sm.Messages[repo] = branchMessages
+		}
+
 	}
 
 	b.Notify(sm.String())

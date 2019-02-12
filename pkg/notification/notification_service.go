@@ -14,14 +14,14 @@ import (
 
 // SlackService provides operations that allow you to post notifications to slack
 type SlackService struct {
-	URL string
-	*http.Client
+	URL    string
+	Client *http.Client
 }
 
 // SlackMessage is used to build the message we will be posting to slack
 type SlackMessage struct {
 	Org      string
-	Messages []string
+	Messages map[string][]string
 }
 
 func (sm *SlackMessage) String() string {
@@ -32,9 +32,12 @@ func (sm *SlackMessage) String() string {
 	ret := fmt.Sprintf("*%s branch check summary:*\n", sm.Org)
 	ret += "\n"
 
-	for _, message := range sm.Messages {
-		ret += message
-		ret += "\n"
+	for repo, messages := range sm.Messages {
+		ret += fmt.Sprintf("*%s*:\n", repo)
+		for _, message := range messages {
+			ret += message
+			ret += "\n"
+		}
 	}
 
 	return ret
@@ -42,9 +45,17 @@ func (sm *SlackMessage) String() string {
 
 // GenerateMessage build a mesage that will be posted to the slack channel
 func (service *SlackService) GenerateMessage(repo, base, head string, aheadBy int) string {
-	message := "*%s*:\n"
-	message += "%s is ahead of %s by %d commits\n"
-	return fmt.Sprintf(message, repo, head, base, aheadBy)
+	var message string
+
+	if aheadBy > 0 {
+		log.Printf("%s branch %s is ahead of %s", repo, head, base)
+		message += fmt.Sprintf("%s is ahead of %s by %d commits\n", head, base, aheadBy)
+
+	} else {
+		// message += fmt.Sprintf("*%s* is up to date with *%s*\n", head, base)
+	}
+
+	return message
 }
 
 // Notify sends slack message in the form of a json payload to the URL provided
@@ -57,7 +68,7 @@ func (service *SlackService) Notify(message string) {
 	payload, err := json.Marshal(map[string]string{"text": message})
 	errorutil.ErrCheck(err, false)
 
-	res, err := service.Post(service.URL, "application/json", bytes.NewReader(payload))
+	res, err := service.Client.Post(service.URL, "application/json", bytes.NewReader(payload))
 	errorutil.ErrCheck(err, false)
 
 	if res != nil {
@@ -67,5 +78,5 @@ func (service *SlackService) Notify(message string) {
 	body, err := ioutil.ReadAll(res.Body)
 	errorutil.ErrCheck(err, false)
 
-	log.Printf("Slack response: %s", string(body))
+	log.Printf("Slack response: %s", body)
 }

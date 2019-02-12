@@ -75,8 +75,19 @@ func TestSlackService_GenerateMessage(t *testing.T) {
 				head:    "master",
 				aheadBy: 5,
 			},
-			want: "*test*:\nmaster is ahead of develop by 5 commits\n",
+			want: "master is ahead of develop by 5 commits\n",
 		},
+
+		// {
+		// 	name: "Test branches up to date path",
+		// 	args: args{
+		// 		repo:    "test",
+		// 		base:    "develop",
+		// 		head:    "master",
+		// 		aheadBy: 0,
+		// 	},
+		// 	want: "*master* is up to date with *develop*\n",
+		// },
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -98,23 +109,23 @@ func TestSlackMessage_String(t *testing.T) {
 			name: "Test happy path",
 			sm: &SlackMessage{
 				Org:      "Organisation",
-				Messages: []string{"message 1", "message 2"},
+				Messages: map[string][]string{"test repo": []string{"message 1", "message 2"}},
 			},
-			want: "*Organisation branch check summary:*\n\nmessage 1\nmessage 2\n",
+			want: "*Organisation branch check summary:*\n\n*test repo*:\nmessage 1\nmessage 2\n",
 		},
 		{
 			name: "Test 1 message path",
 			sm: &SlackMessage{
 				Org:      "Organisation",
-				Messages: []string{"message 1"},
+				Messages: map[string][]string{"test repo": []string{"message 1"}},
 			},
-			want: "*Organisation branch check summary:*\n\nmessage 1\n",
+			want: "*Organisation branch check summary:*\n\n*test repo*:\nmessage 1\n",
 		},
 		{
 			name: "Test no org path",
 			sm: &SlackMessage{
 				Org:      "",
-				Messages: []string{"message 1"},
+				Messages: map[string][]string{"test repo": []string{"message 1"}},
 			},
 			want: "",
 		},
@@ -122,7 +133,7 @@ func TestSlackMessage_String(t *testing.T) {
 			name: "Test no messages path",
 			sm: &SlackMessage{
 				Org:      "Organisation",
-				Messages: []string{},
+				Messages: map[string][]string{},
 			},
 			want: "",
 		},
@@ -130,7 +141,7 @@ func TestSlackMessage_String(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := tt.sm.String(); got != tt.want {
-				t.Errorf("SlackMessage.String() = %v, want %v", got, tt.want)
+				t.Errorf("SlackMessage.String() = %q, want %q", got, tt.want)
 			}
 		})
 	}

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strings"
 
@@ -12,7 +13,7 @@ import (
 )
 
 const (
-	getBranchesPath     = "/repos/%s/%s/branches"
+	getBranchesPath     = "/repos/%s/%s/branches?per_page=100"
 	compareBranchesPath = "/repos/%s/%s/compare/%s...%s"
 )
 
@@ -35,7 +36,7 @@ type APIService struct {
 
 // GetBranches return all the branches matching the supplied prefix
 // if no prefix is supplied it returns all the branches from the repo
-func (service *APIService) GetBranches(owner string, repo string, prefix []string) []string {
+func (service *APIService) GetBranches(owner, repo string, prefix []string) []string {
 	url := service.BaseURL + fmt.Sprintf(getBranchesPath, owner, repo)
 	responseModel := []BranchModel{}
 
@@ -54,13 +55,18 @@ func (service *APIService) GetBranches(owner string, repo string, prefix []strin
 }
 
 // GetAheadBy returns how many commits the supplied branch is ahead of the supplied base branch
-func (service *APIService) GetAheadBy(owner string, repo string, base string, head string) int {
-	url := service.BaseURL + fmt.Sprintf(compareBranchesPath, owner, repo, base, head)
-	responseModel := &CompareBranchesModel{}
+func (service *APIService) GetAheadBy(owner, repo, base string, heads []string) map[string]int {
+	results := make(map[string]int)
+	for _, head := range heads {
+		log.Printf("Checking %s branch %s", repo, head)
+		url := service.BaseURL + fmt.Sprintf(compareBranchesPath, owner, repo, base, head)
+		responseModel := &CompareBranchesModel{}
 
-	service.getGithubResponse(url, responseModel)
+		service.getGithubResponse(url, responseModel)
+		results[head] = responseModel.Ahead
+	}
 
-	return responseModel.Ahead
+	return results
 }
 
 func (service *APIService) getGithubResponse(url string, model interface{}) {
