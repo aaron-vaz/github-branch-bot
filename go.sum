@@ -1,5 +1,5 @@
-github.com/aaron-vaz/golang-utils v0.0.0-20190122115338-a6acc468de1b h1:X3vjuBtOIULcPGx+aUuuBAi7ixB2pPsuj70Kf24l+Mc=
-github.com/aaron-vaz/golang-utils v0.0.0-20190122115338-a6acc468de1b/go.mod h1:6jCjmbnApyJHoMfzewIjtBuyO1RkkulFGQP2NervfBA=
+github.com/aaron-vaz/golang-utils v0.0.0-20190212180741-6adf6fc8d987 h1:sFiWLZVJ8298lBfV23wJ01Yut35UA6oAVzfiapbILpk=
+github.com/aaron-vaz/golang-utils v0.0.0-20190212180741-6adf6fc8d987/go.mod h1:6jCjmbnApyJHoMfzewIjtBuyO1RkkulFGQP2NervfBA=
 github.com/aws/aws-lambda-go v1.8.1 h1:nHBpP6XC30bwF6qWKrw/BrK2A8i4GKmSZzajTBIJS4A=
 github.com/aws/aws-lambda-go v1.8.1/go.mod h1:zUsUQhAUjYzR8AuduJPCfhBuKWUaDbQiPOG+ouzmE1A=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=

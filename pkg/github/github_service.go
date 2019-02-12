@@ -7,7 +7,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/aaron-vaz/golang-utils/pkg/util"
+	"github.com/aaron-vaz/golang-utils/pkg/errorutil"
+	"github.com/aaron-vaz/golang-utils/pkg/ioutils"
 )
 
 const (
@@ -64,19 +65,19 @@ func (service *APIService) GetAheadBy(owner string, repo string, base string, he
 
 func (service *APIService) getGithubResponse(url string, model interface{}) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
-	util.ErrCheck(err, false)
+	errorutil.ErrCheck(err, false)
 
 	req.Header.Add("Authorization", "token "+service.Token)
 
 	res, err := service.Do(req)
-	util.ErrCheck(err, false)
+	errorutil.ErrCheck(err, false)
 
 	if res != nil {
-		defer util.Close(res.Body)
+		defer ioutils.Close(res.Body)
 	}
 
 	content, err := ioutil.ReadAll(res.Body)
-	util.ErrCheck(err, false)
+	errorutil.ErrCheck(err, false)
 
-	util.ErrCheck(json.Unmarshal(content, &model), false)
+	errorutil.ErrCheck(json.Unmarshal(content, &model), false)
 }
