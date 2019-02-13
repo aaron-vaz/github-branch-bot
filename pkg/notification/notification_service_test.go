@@ -78,16 +78,16 @@ func TestSlackService_GenerateMessage(t *testing.T) {
 			want: "master is ahead of develop by 5 commits\n",
 		},
 
-		// {
-		// 	name: "Test branches up to date path",
-		// 	args: args{
-		// 		repo:    "test",
-		// 		base:    "develop",
-		// 		head:    "master",
-		// 		aheadBy: 0,
-		// 	},
-		// 	want: "*master* is up to date with *develop*\n",
-		// },
+		{
+			name: "Test branches up to date path",
+			args: args{
+				repo:    "test",
+				base:    "develop",
+				head:    "master",
+				aheadBy: 0,
+			},
+			want: "",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

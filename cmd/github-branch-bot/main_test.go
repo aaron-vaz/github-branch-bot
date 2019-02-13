@@ -31,7 +31,7 @@ func TestBot_Start(t *testing.T) {
 			name:             "Test Branches inline path",
 			branchesResponse: readTestResource("branches-happy-path.json"),
 			compareResponse:  readTestResource("inline-happy-path.json"),
-			messageWant:      "",
+			messageWant:      `{"text":"*org branch check summary:*\n\n*repo*:\nup to date\n"}`,
 		},
 		{
 			name:             "Test No response path",

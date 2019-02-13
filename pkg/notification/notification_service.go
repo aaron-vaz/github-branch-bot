@@ -51,8 +51,6 @@ func (service *SlackService) GenerateMessage(repo, base, head string, aheadBy in
 		log.Printf("%s branch %s is ahead of %s", repo, head, base)
 		message += fmt.Sprintf("%s is ahead of %s by %d commits\n", head, base, aheadBy)
 
-	} else {
-		// message += fmt.Sprintf("*%s* is up to date with *%s*\n", head, base)
 	}
 
 	return message

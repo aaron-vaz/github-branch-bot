@@ -43,6 +43,9 @@ func (b *Bot) Start() {
 
 		if len(branchMessages) > 0 {
 			sm.Messages[repo] = branchMessages
+
+		} else {
+			sm.Messages[repo] = []string{"up to date"}
 		}
 
 	}
