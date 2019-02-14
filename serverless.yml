@@ -4,6 +4,7 @@ provider:
   name: aws
   region: eu-west-2
   runtime: go1.x
+  timeout: 60
 
 functions:
   github-branch-bot:
@@ -20,7 +21,4 @@ functions:
       - schedule: cron(0 0 ? * * *)
 
 package:
- exclude:
-   - ./**
- include:
-    - ./bin/github-branch-bot
+  artifact: bin/github-branch-bot.zip
