@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -9,6 +10,8 @@ import (
 	"github.com/aaron-vaz/github-branch-bot/pkg/notification"
 	"github.com/aws/aws-lambda-go/lambda"
 )
+
+const projectUpToDateText = "up to date with %s\n"
 
 // Bot is the main struct, it is used to start the application
 type Bot struct {
@@ -45,7 +48,7 @@ func (b *Bot) Start() {
 			sm.Messages[repo] = branchMessages
 
 		} else {
-			sm.Messages[repo] = []string{"up to date"}
+			sm.Messages[repo] = []string{fmt.Sprintf(projectUpToDateText, b.BaseBranch)}
 		}
 
 	}
