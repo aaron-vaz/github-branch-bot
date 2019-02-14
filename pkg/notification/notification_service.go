@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"sort"
 
 	"github.com/aaron-vaz/golang-utils/pkg/errorutil"
 	"github.com/aaron-vaz/golang-utils/pkg/ioutils"
@@ -32,9 +33,16 @@ func (sm *SlackMessage) String() string {
 	ret := fmt.Sprintf("*%s branch check summary:*\n", sm.Org)
 	ret += "\n"
 
-	for repo, messages := range sm.Messages {
+	var repos []string
+	for repo := range sm.Messages {
+		repos = append(repos, repo)
+	}
+
+	sort.Strings(repos)
+
+	for _, repo := range repos {
 		ret += fmt.Sprintf("*%s*:\n", repo)
-		for _, message := range messages {
+		for _, message := range sm.Messages[repo] {
 			ret += message
 			ret += "\n"
 		}

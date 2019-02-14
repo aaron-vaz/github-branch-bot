@@ -10,7 +10,6 @@ type Params struct {
 	GithubBaseURL      string
 	GithubToken        string
 	GithubOrganization string
-	GithubRepo         []string
 	BaseBranch         string
 	HeadBranchPrefixes []string
 	WebhookURL         string
@@ -22,7 +21,6 @@ func ParseParams() *Params {
 		GithubBaseURL:      getEnv("GITHUB_BASE_URL", "http://localhost.com"),
 		GithubToken:        getEnv("GITHUB_TOKEN", ""),
 		GithubOrganization: getEnv("GITHUB_ORGANISATION", ""),
-		GithubRepo:         splitEnv("GITHUB_REPO", "", ","),
 		BaseBranch:         getEnv("BASE_BRANCH", "develop"),
 		HeadBranchPrefixes: splitEnv("HEAD_BRANCH_PREFIX", "master", ","),
 		WebhookURL:         getEnv("WEBHOOK_URL", "http://localhost.com"),

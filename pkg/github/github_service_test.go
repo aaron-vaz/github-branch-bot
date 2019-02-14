@@ -145,6 +145,61 @@ func TestAPIService_GetAheadBy(t *testing.T) {
 	}
 }
 
+func TestAPIService_GetReposInOrg(t *testing.T) {
+	tests := []struct {
+		name       string
+		org        string
+		baseBranch string
+		response   []byte
+		want       []string
+	}{
+		{
+			name:       "Test Happy Path",
+			org:        "test",
+			baseBranch: "master",
+			response:   readTestResource("get-repos-in-org/happy-path.json"),
+			want:       []string{"test"},
+		},
+
+		{
+			name:       "Test no matched branch",
+			org:        "test",
+			baseBranch: "develop",
+			response:   readTestResource("get-repos-in-org/happy-path.json"),
+			want:       []string{},
+		},
+
+		{
+			name:       "Test invalid json path",
+			org:        "test",
+			baseBranch: "master",
+			response:   readTestResource("invalid.json"),
+			want:       []string{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+				rw.Write(tt.response)
+			}))
+
+			service := &APIService{
+				BaseURL: server.URL,
+				Client:  server.Client(),
+			}
+
+			if got := service.GetReposInOrg(tt.org, tt.baseBranch); !cmp.Equal(got, tt.want) {
+				if len(got) == 0 && len(tt.want) == 0 {
+					return
+				}
+
+				t.Errorf("APIService.GetReposInOrg() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func readTestResource(path string) []byte {
 	content, err := ioutil.ReadFile(filepath.Join(testResources, path))
 	if err != nil {

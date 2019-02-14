@@ -13,17 +13,19 @@ import (
 )
 
 const (
+	getReposInOrgPath   = "/orgs/%s/repos?per_page=100"
 	getBranchesPath     = "/repos/%s/%s/branches?per_page=100"
 	compareBranchesPath = "/repos/%s/%s/compare/%s...%s"
 )
 
-// BranchModel is the struct that represents the github branches response
-type BranchModel struct {
-	Name string `json:"name"`
+// Response is the struct that represents the github branches response
+type Response struct {
+	Name          string `json:"name"`
+	DefaultBranch string `json:"default_branch"`
 }
 
-// CompareBranchesModel is the struct that represents the github compare branches response
-type CompareBranchesModel struct {
+// CompareBranches is the struct that represents the github compare branches response
+type CompareBranches struct {
 	Ahead int `json:"ahead_by"`
 }
 
@@ -34,16 +36,33 @@ type APIService struct {
 	*http.Client
 }
 
+// GetReposInOrg returns a list projects that contain the configured base branch as their default branch
+func (service *APIService) GetReposInOrg(org, baseBranch string) []string {
+	url := service.BaseURL + fmt.Sprintf(getReposInOrgPath, org)
+	responses := []Response{}
+
+	service.getGithubResponse(url, &responses)
+
+	var repos []string
+	for _, response := range responses {
+		if response.DefaultBranch == baseBranch {
+			repos = append(repos, response.Name)
+		}
+	}
+
+	return repos
+}
+
 // GetBranches return all the branches matching the supplied prefix
 // if no prefix is supplied it returns all the branches from the repo
 func (service *APIService) GetBranches(owner, repo string, prefix []string) []string {
 	url := service.BaseURL + fmt.Sprintf(getBranchesPath, owner, repo)
-	responseModel := []BranchModel{}
+	responses := []Response{}
 
-	service.getGithubResponse(url, &responseModel)
+	service.getGithubResponse(url, &responses)
 
 	var branches []string
-	for _, value := range responseModel {
+	for _, value := range responses {
 		for _, branch := range prefix {
 			if branch == "" || strings.HasPrefix(value.Name, branch) {
 				branches = append(branches, value.Name)
@@ -60,10 +79,10 @@ func (service *APIService) GetAheadBy(owner, repo, base string, heads []string) 
 	for _, head := range heads {
 		log.Printf("Checking %s branch %s", repo, head)
 		url := service.BaseURL + fmt.Sprintf(compareBranchesPath, owner, repo, base, head)
-		responseModel := &CompareBranchesModel{}
+		response := &CompareBranches{}
 
-		service.getGithubResponse(url, responseModel)
-		results[head] = responseModel.Ahead
+		service.getGithubResponse(url, response)
+		results[head] = response.Ahead
 	}
 
 	return results
