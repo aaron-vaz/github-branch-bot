@@ -24,7 +24,12 @@ func HandleRequest() {
 		Wg:     &sync.WaitGroup{},
 	}
 
-	slackAPI.Notify(params.WebhookURL, branchService.GenerateStatusMessage())
+	if message := branchService.GenerateStatusMessage(); message != "" {
+		slackAPI.Notify(params.WebhookURL, message)
+
+	} else {
+		slackAPI.Notify(params.WebhookURL, "An error has occurred while performing the branch check")
+	}
 }
 
 func main() {

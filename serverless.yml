@@ -18,9 +18,20 @@ functions:
       WEBHOOK_URL: ""
     events:
       - schedule: cron(0 0 ? * * *)
+    package:
+      artifact: bin/github-branch-bot.zip
+  github-branch-check:
+    handler: bin/github-branch-check
+    environment:
+      GITHUB_BASE_URL: ""
+      GITHUB_TOKEN: ""
+      GITHUB_ORGANISATION: ""
+      BASE_BRANCH: ""
+      HEAD_BRANCH_PREFIX: ""
+      SLACK_COMMAND_TOKEN: ""
+    events:
       - http:
           path: /
           method: get
-
-package:
-  artifact: bin/github-branch-bot.zip
+    package:
+      artifact: bin/github-branch-check.zip               
