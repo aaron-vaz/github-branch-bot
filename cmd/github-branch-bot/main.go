@@ -44,7 +44,7 @@ func (b *Bot) Start() {
 
 	b.wg.Wait()
 
-	b.msg.Notify(sm.String())
+	b.msg.Notify(b.params.WebhookURL, sm.String())
 }
 
 func (b *Bot) processRepo(repo string, sm *notification.SlackMessage) {
@@ -78,7 +78,7 @@ func (b *Bot) processRepo(repo string, sm *notification.SlackMessage) {
 func HandleRequest() {
 	params := config.ParseParams()
 	githubAPI := &github.APIService{BaseURL: params.GithubBaseURL, Token: params.GithubToken, Client: http.DefaultClient}
-	slackAPI := &notification.SlackService{URL: params.WebhookURL, Client: http.DefaultClient}
+	slackAPI := &notification.SlackService{Client: http.DefaultClient}
 
 	bot := &Bot{
 		params: params,

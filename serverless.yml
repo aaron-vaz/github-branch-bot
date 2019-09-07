@@ -13,12 +13,14 @@ functions:
       GITHUB_BASE_URL: ""
       GITHUB_TOKEN: ""
       GITHUB_ORGANISATION: ""
-      GITHUB_REPO: ""
       BASE_BRANCH: ""
       HEAD_BRANCH_PREFIX: ""
       WEBHOOK_URL: ""
     events:
       - schedule: cron(0 0 ? * * *)
+      - http:
+          path: /
+          method: get
 
 package:
   artifact: bin/github-branch-bot.zip

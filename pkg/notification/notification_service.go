@@ -15,7 +15,6 @@ import (
 
 // SlackService provides operations that allow you to post notifications to slack
 type SlackService struct {
-	URL    string
 	Client *http.Client
 }
 
@@ -58,14 +57,13 @@ func (service *SlackService) GenerateMessage(repo, base, head string, aheadBy in
 	if aheadBy > 0 {
 		log.Printf("%s branch %s is ahead of %s", repo, head, base)
 		message += fmt.Sprintf("%s is ahead of %s by %d commits\n", head, base, aheadBy)
-
 	}
 
 	return message
 }
 
 // Notify sends slack message in the form of a json payload to the URL provided
-func (service *SlackService) Notify(message string) {
+func (service *SlackService) Notify(url, message string) {
 	if message == "" {
 		log.Println("No message received, notification will not be performed")
 		return
@@ -74,7 +72,7 @@ func (service *SlackService) Notify(message string) {
 	payload, err := json.Marshal(map[string]string{"text": message})
 	errorutil.ErrCheck(err, false)
 
-	res, err := service.Client.Post(service.URL, "application/json", bytes.NewReader(payload))
+	res, err := service.Client.Post(url, "application/json", bytes.NewReader(payload))
 	errorutil.ErrCheck(err, false)
 
 	if res != nil {

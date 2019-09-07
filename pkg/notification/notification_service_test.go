@@ -45,8 +45,8 @@ func TestSlackService_Notify(t *testing.T) {
 				received = true
 			}))
 
-			service := &SlackService{server.URL, server.Client()}
-			service.Notify(tt.message)
+			service := &SlackService{server.Client()}
+			service.Notify(server.URL, tt.message)
 
 			if received != tt.delivered {
 				t.Errorf("Request delivery didnt match expected, want = %t, got = %t", tt.delivered, received)

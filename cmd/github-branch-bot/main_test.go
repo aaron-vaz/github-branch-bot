@@ -96,10 +96,11 @@ func TestBot_Start(t *testing.T) {
 				GithubOrganization: "org",
 				BaseBranch:         "develop",
 				HeadBranchPrefixes: []string{"master"},
+				WebhookURL:         server.URL,
 			}
 
 			githubAPI := &github.APIService{BaseURL: server.URL, Client: server.Client()}
-			slackAPI := &notification.SlackService{URL: server.URL, Client: server.Client()}
+			slackAPI := &notification.SlackService{Client: server.Client()}
 
 			bot := &Bot{
 				params: params,
