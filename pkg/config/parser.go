@@ -13,6 +13,7 @@ type Params struct {
 	BaseBranch         string
 	HeadBranchPrefixes []string
 	WebhookURL         string
+	SlackCommandToken  string
 }
 
 // ParseParams read the configuration parameters from environment variables and creates a Params struct to return
@@ -24,6 +25,7 @@ func ParseParams() *Params {
 		BaseBranch:         getEnv("BASE_BRANCH", "develop"),
 		HeadBranchPrefixes: splitEnv("HEAD_BRANCH_PREFIX", "master", ","),
 		WebhookURL:         getEnv("WEBHOOK_URL", "http://localhost.com"),
+		SlackCommandToken:  getEnv("SLACK_COMMAND_TOKEN", ""),
 	}
 }
 

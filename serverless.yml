@@ -6,6 +6,9 @@ provider:
   runtime: go1.x
   timeout: 60
 
+package:
+  individually: true
+
 functions:
   github-branch-bot:
     handler: bin/github-branch-bot
@@ -33,5 +36,11 @@ functions:
       - http:
           path: /
           method: get
+          async: true
+          request:
+           parameters:
+            querystrings:
+              token: true
+              response_url: true
     package:
-      artifact: bin/github-branch-check.zip               
+      artifact: bin/github-branch-check.zip

@@ -3,6 +3,9 @@ BUILD_DIR:=bin
 LDFLAGS:=-ldflags "-s -w"
 REPO:=/go/src/github.com/aaron-vaz/${NAME}
 
+BRANCH_BOT:=${NAME}
+BRANCH_CHECK=github-branch-check
+
 clean:
 	@echo "===> Cleaning build directories"
 	@-rm -rfv ${BUILD_DIR} vendor .serverless
@@ -15,12 +18,16 @@ test:
 	@go test -cover ./...
 
 build: setup test
-	@echo "===> Running go build"
-	@go build -v ${LDFLAGS} -o ${BUILD_DIR}/${NAME} ./cmd/${NAME}
+	@echo "===> Building ${BRANCH_BOT}"
+	@go build -v ${LDFLAGS} -o ${BUILD_DIR}/${BRANCH_BOT} ./cmd/${BRANCH_BOT}
+
+	@echo "===> Building ${BRANCH_CHECK}"
+	@go build -v ${LDFLAGS} -o ${BUILD_DIR}/${BRANCH_CHECK} ./cmd/${BRANCH_CHECK}
 
 package: build
-	@echo "===> Building zip"
-	@zip -J -r ${BUILD_DIR}/${NAME}.zip ${BUILD_DIR}
+	@echo "===> Building zips"
+	@zip -J -r ${BUILD_DIR}/${BRANCH_BOT}.zip ${BUILD_DIR}/${BRANCH_BOT}
+		@zip -J -r ${BUILD_DIR}/${BRANCH_CHECK}.zip ${BUILD_DIR}/${BRANCH_CHECK}
 
 docker: setup
 	@echo "===> Building in docker container"
