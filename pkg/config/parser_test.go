@@ -21,6 +21,7 @@ func TestParseParams(t *testing.T) {
 				os.Setenv("BASE_BRANCH", "develop")
 				os.Setenv("HEAD_BRANCH_PREFIX", "release")
 				os.Setenv("WEBHOOK_URL", "http://localhost.com")
+				os.Setenv("SLACK_COMMAND_TOKEN", "token")
 			},
 			want: &Params{
 				GithubBaseURL:      "http://localhost.com",
@@ -29,6 +30,7 @@ func TestParseParams(t *testing.T) {
 				BaseBranch:         "develop",
 				HeadBranchPrefixes: []string{"release"},
 				WebhookURL:         "http://localhost.com",
+				SlackCommandToken:  "token",
 			},
 		},
 
@@ -41,6 +43,7 @@ func TestParseParams(t *testing.T) {
 				os.Setenv("BASE_BRANCH", "develop")
 				os.Setenv("HEAD_BRANCH_PREFIX", "release,master")
 				os.Setenv("WEBHOOK_URL", "http://localhost.com")
+				os.Setenv("SLACK_COMMAND_TOKEN", "token")
 			},
 			want: &Params{
 				GithubBaseURL:      "http://localhost.com",
@@ -49,6 +52,7 @@ func TestParseParams(t *testing.T) {
 				BaseBranch:         "develop",
 				HeadBranchPrefixes: []string{"release", "master"},
 				WebhookURL:         "http://localhost.com",
+				SlackCommandToken:  "token",
 			},
 		},
 
@@ -61,6 +65,7 @@ func TestParseParams(t *testing.T) {
 				os.Setenv("BASE_BRANCH", "develop")
 				os.Setenv("HEAD_BRANCH_PREFIX", "release:master")
 				os.Setenv("WEBHOOK_URL", "http://localhost.com")
+				os.Setenv("SLACK_COMMAND_TOKEN", "token")
 			},
 			want: &Params{
 				GithubBaseURL:      "http://localhost.com",
@@ -69,6 +74,7 @@ func TestParseParams(t *testing.T) {
 				BaseBranch:         "develop",
 				HeadBranchPrefixes: []string{"release:master"},
 				WebhookURL:         "http://localhost.com",
+				SlackCommandToken:  "token",
 			},
 		},
 
@@ -84,6 +90,7 @@ func TestParseParams(t *testing.T) {
 				BaseBranch:         "develop",
 				HeadBranchPrefixes: []string{"master"},
 				WebhookURL:         "http://localhost.com",
+				SlackCommandToken:  "",
 			},
 		},
 	}
@@ -108,4 +115,5 @@ func clearEnvs() {
 	os.Setenv("BASE_BRANCH", "")
 	os.Setenv("HEAD_BRANCH_PREFIX", "")
 	os.Setenv("WEBHOOK_URL", "")
+	os.Setenv("SLACK_COMMAND_TOKEN", "")
 }
