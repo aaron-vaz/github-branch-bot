@@ -145,7 +145,7 @@ func TestAPIService_GetAheadBy(t *testing.T) {
 	}
 }
 
-func TestAPIService_GetReposInOrg(t *testing.T) {
+func TestAPIService_GetRepositoriesInOrg(t *testing.T) {
 	tests := []struct {
 		name       string
 		org        string
@@ -189,12 +189,12 @@ func TestAPIService_GetReposInOrg(t *testing.T) {
 				Client:  server.Client(),
 			}
 
-			if got := service.GetReposInOrg(tt.org, tt.baseBranch); !cmp.Equal(got, tt.want) {
+			if got := service.GetRepositoriesInOrg(tt.org, tt.baseBranch); !cmp.Equal(got, tt.want) {
 				if len(got) == 0 && len(tt.want) == 0 {
 					return
 				}
 
-				t.Errorf("APIService.GetReposInOrg() = %v, want %v", got, tt.want)
+				t.Errorf("APIService.GetRepositoriesInOrg() = %v, want %v", got, tt.want)
 			}
 		})
 	}

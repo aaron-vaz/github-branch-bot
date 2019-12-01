@@ -27,16 +27,16 @@ func (b *BranchService) GenerateStatusMessage() string {
 		Messages: make(map[string][]string),
 	}
 
-	repos := b.API.GetReposInOrg(b.Params.GithubOrganization, b.Params.BaseBranch)
+	repositories := b.API.GetRepositoriesInOrg(b.Params.GithubOrganization, b.Params.BaseBranch)
 
-	if len(repos) == 0 {
+	if len(repositories) == 0 {
 		log.Printf("No branches in %s contain a default branch %s", b.Params.GithubOrganization, b.Params.BaseBranch)
 		return ""
 	}
 
-	b.Wg.Add(len(repos))
+	b.Wg.Add(len(repositories))
 
-	for _, repo := range repos {
+	for _, repo := range repositories {
 		go b.processRepo(repo, sm)
 	}
 

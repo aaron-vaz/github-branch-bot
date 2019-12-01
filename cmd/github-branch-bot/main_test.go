@@ -63,7 +63,6 @@ func TestHandleRequest(t *testing.T) {
 		os.Setenv("GITHUB_BASE_URL", server.URL)
 		os.Setenv("GITHUB_TOKEN", "token")
 		os.Setenv("GITHUB_ORGANISATION", "org")
-		os.Setenv("GITHUB_REPO", "repo")
 		os.Setenv("BASE_BRANCH", "develop")
 		os.Setenv("HEAD_BRANCH_PREFIX", "release")
 		os.Setenv("WEBHOOK_URL", server.URL)
