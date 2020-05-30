@@ -20,7 +20,7 @@ functions:
       HEAD_BRANCH_PREFIX: ""
       WEBHOOK_URL: ""
     events:
-      - schedule: cron(0 0 ? * * *)
+      - schedule: cron(0 0 ? * MON-FRI *)
     package:
       artifact: bin/github-branch-bot.zip
   github-branch-check:
